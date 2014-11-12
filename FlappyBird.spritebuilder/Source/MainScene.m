@@ -173,7 +173,21 @@
         }
     }
     
-    //move and loop the clouds
+    // move and loop the bushes
+    for (CCNode *bush in _bushes) {
+        // move the bush
+        bush.position = ccp(bush.position.x -
+                            (character.physicsBody.velocity.x * delta), bush.position.y);
+        
+        // if the left corner is one complete width off the screen,
+        // move it to the right
+        if (bush.position.x <= (-1 * bush.contentSize.width)) {
+            bush.position = ccp(bush.position.x +
+                                2 * bush.contentSize.width, bush.position.y);
+        }
+    }
+    
+    // move and loop the clouds
     for (CCNode *cloud in _clouds) {
         // move the cloud
         cloud.position = ccp(cloud.position.x -
@@ -186,34 +200,6 @@
                                  2 * cloud.contentSize.width, cloud.position.y);
         }
     }
-    
-    
-    
-    
-    if (character.physicsBody.allowsRotation) {
-        float angularVelocity = clampf(character.physicsBody.angularVelocity, -2.f, 1.f);
-        character.physicsBody.angularVelocity = angularVelocity;
-    }
-    
-    if ((_sinceTouch > 0.5f)) {
-        [character.physicsBody applyAngularImpulse:-40000.f*delta];
-    }
-    
-    physicsNode.position = ccp(physicsNode.position.x - (character.physicsBody.velocity.x * delta), physicsNode.position.y);
-    
-    // loop the ground
-    for (CCNode *ground in _grounds) {
-        // get the world position of the ground
-        CGPoint groundWorldPosition = [physicsNode convertToWorldSpace:ground.position];
-        // get the screen position of the ground
-        CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
-        
-        // if the left corner is one complete width off the screen, move it to the right
-        if (groundScreenPosition.x <= (-1 * ground.contentSize.width)) {
-            ground.position = ccp(ground.position.x + 2 * ground.contentSize.width, ground.position.y);
-        }
-    }
-
 }
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair character:(CCSprite*)character level:(CCNode*)level {
